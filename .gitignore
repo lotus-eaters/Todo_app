@@ -54,7 +54,7 @@ htmlcov/
 *.cover
 
 # Database
-*.db
+TodoApp_FastAPI/*.db
 *.sqlite
 *.sqlite3
 todo_app.db
