@@ -6,12 +6,17 @@
 # is going to use to be able to create a database and be able to create a connection to a database and
 # being able to use all of the database records within our application.
 
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-# SQLALCHEMY_DATABASE_URL = 'sqlite:///./todo_app.db' - for sqlite db
-# URL is going to be used to be able to create a location of this database on our fast API application.
-SQLALCHEMY_DATABASE_URL = 'postgresql://hsmadhusudhan@localhost:5432/TodoApplicationDatabase'
+
+# Get database URL from environment variable or use default
+SQLALCHEMY_DATABASE_URL = os.getenv(
+    'DATABASE_URL',
+    'postgresql://hsmadhusudhan@localhost:5432/TodoApplicationDatabase'
+)
+
 # to create an engine for our application, a database engine is something that we can use to open up a 
 # connection and use our database.
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

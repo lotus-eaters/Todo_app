@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TodoApp Dashboard - Manage your todos">
+    <title>TodoApp Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="initDashboard()">
+    <div class="dashboard-wrapper">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-content">
+                    <div class="navbar-brand">
+                        <span>📝</span>
+                        <span>TodoApp</span>
+                    </div>
+                    <div class="user-menu">
+                        <div class="user-info">
+                            <div class="username" id="navbar-username">Loading...</div>
+                            <div class="role" id="navbar-role">user</div>
+                        </div>
+                        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Filter Section -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">🔍 Filter</div>
+                        <button class="filter-btn active" data-filter="all" onclick="filterTodos('all')">
+                            All Todos
+                        </button>
+                        <button class="filter-btn" data-filter="active" onclick="filterTodos('active')">
+                            Active
+                        </button>
+                        <button class="filter-btn" data-filter="completed" onclick="filterTodos('completed')">
+                            Completed
+                        </button>
+                        <button class="filter-btn" data-filter="high-priority" onclick="filterTodos('high-priority')">
+                            High Priority
+                        </button>
+                    </div>
+
+                    <!-- Sort Section -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">↕️ Sort By</div>
+                        <button class="sort-btn active" onclick="sortTodos('newest')">
+                            Newest First
+                        </button>
+                        <button class="sort-btn" onclick="sortTodos('oldest')">
+                            Oldest First
+                        </button>
+                        <button class="sort-btn" onclick="sortTodos('priority')">
+                            By Priority
+                        </button>
+                        <button class="sort-btn" onclick="sortTodos('title')">
+                            By Title (A-Z)
+                        </button>
+                    </div>
+
+                    <!-- Stats Section -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">📊 Stats</div>
+                        <div class="todos-stats">
+                            <div class="stat-item">
+                                <div class="stat-number" id="stat-total">0</div>
+                                <div class="stat-label">Total</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="stat-active">0</div>
+                                <div class="stat-label">Active</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="stat-completed">0</div>
+                                <div class="stat-label">Done</div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <!-- Add Todo Section -->
+                    <section class="add-todo-section">
+                        <h2>➕ New Todo</h2>
+                        <form id="todo-form">
+                            <div class="form-group">
+                                <label for="todo-title">Title</label>
+                                <input 
+                                    type="text" 
+                                    id="todo-title" 
+                                    placeholder="What needs to be done?" 
+                                    required
+                                    minlength="3"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="todo-description">Description</label>
+                                <input 
+                                    type="text" 
+                                    id="todo-description" 
+                                    placeholder="Add more details about this task..." 
+                                    required
+                                    minlength="2"
+                                >
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="todo-priority">Priority</label>
+                                    <select id="todo-priority" required>
+                                        <option value="1">🟢 Low</option>
+                                        <option value="2">🟡 Medium</option>
+                                        <option value="3" selected>🟠 High</option>
+                                        <option value="4">🔴 Urgent</option>
+                                        <option value="5">⛔ Critical</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Add Todo</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Todos List Section -->
+                    <section class="todos-section">
+                        <h2>📋 Your Todos</h2>
+                        <div id="todos-list">
+                            <div class="empty-state">Loading todos...</div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/todos.js"></script>
+
+    <script>
+        // Initialize dashboard
+        function initDashboard() {
+            // Check authentication
+            requireAuth();
+
+            // Load user info
+            const userInfo = getCurrentUser();
+            if (userInfo) {
+                document.getElementById('navbar-username').textContent = userInfo.username;
+                document.getElementById('navbar-role').textContent = userInfo.role;
+            }
+
+            // Load todos
+            loadTodos();
+
+            // Set up auto-update stats
+            setInterval(updateStats, 5000);
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.complete).length;
+            const active = total - completed;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-active').textContent = active;
+            document.getElementById('stat-completed').textContent = completed;
+        }
+
+        // Initial stats update after loading
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updateStats, 500);
+        });
+    </script>
+</body>
+</html>

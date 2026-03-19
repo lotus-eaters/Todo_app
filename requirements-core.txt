@@ -1,0 +1,24 @@
+# Core Dependencies for TodoApp Backend
+# Install with: pip install -r requirements-core.txt
+
+# FastAPI Framework
+fastapi==0.124.4
+uvicorn==0.33.0
+
+# Database
+sqlalchemy==2.0.48
+psycopg2-binary==2.9.10
+
+# Authentication
+python-jose==3.4.0
+passlib==1.7.4
+bcrypt==5.0.0
+
+# Form handling
+python-multipart==0.0.20
+
+# CORS Support (built-in with starlette)
+starlette==0.44.0
+
+# Utilities
+pydantic==2.10.6
